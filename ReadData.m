@@ -1,7 +1,7 @@
 function [ai0, ai1] = ReadData()
 %UNTITLED Summary of this function goes here
 %   Detailed explanation goes here
-devices = daq.getDevices
+devices = daq.getDevices;
 
 s = daq.createSession('ni');
 addAnalogInputChannel(s, 'Dev2', 'ai0', 'Voltage');

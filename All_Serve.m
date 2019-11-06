@@ -75,24 +75,30 @@ varargout{1} = handles.output;
 
 % --- Executes on button press in 'Start'.
 function pushbutton2_Callback(hObject, eventdata, handles)
+% TODO:TURN INTO TOGGLE BUTTON
+
+
 % hObject    handle to pushbutton2 (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-%[ai0, ai1] = ReadData();
-%Device ID
-set(handles.text11, 'String', 'ai0');
-set(handles.text15, 'String', 'ai1');
-%Raw Data
-set(handles.text12, 'String', num2str(ai0));
-set(handles.text16, 'String', num2str(ai1));
-%TempC
-ai0_TempC = data2DegC(ai0);
-ai1_TempC = data2DegC(ai1);
-set(handles.text13, 'String', num2str(ai0_TempC));
-set(handles.text17, 'String', num2str(ai1_TempC));
-%TempF
-set(handles.text14, 'String', num2str(degC2degF(ai0_TempC)));
-set(handles.text18, 'String', num2str(degC2degF(ai1_TempC)));
+while(1)
+    [ai0, ai1] = ReadData();
+    %Device ID
+    set(handles.text11, 'String', 'ai0');
+    set(handles.text15, 'String', 'ai1');
+    %Raw Data
+    format shortg
+    set(handles.text12, 'String', num2str(ai0));
+    set(handles.text16, 'String', num2str(ai1));
+    %TempC
+    ai0_TempC = data2DegC(ai0);
+    ai1_TempC = data2DegC(ai1);
+    set(handles.text13, 'String', num2str(ai0_TempC));
+    set(handles.text17, 'String', num2str(ai1_TempC));
+    %TempF
+    set(handles.text14, 'String', num2str(degC2degF(ai0_TempC)));
+    set(handles.text18, 'String', num2str(degC2degF(ai1_TempC)));
+end
 
 
 % --- Executes on button press in 'Stop'.
@@ -109,8 +115,25 @@ function pushbutton4_Callback(hObject, eventdata, handles)
 % hObject    handle to pushbutton4 (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-title = ['Raw Data', 'Temp C', 'Temp F'];
-xlswrite('aio_Log.xls', cellstr(title));
+filename = 'aio_Log.xls';
+%if exist(filename, 'file')==2
+     % File exists.
+ %    delete 'filename';
+%else
+     % File does not exist.
+     %title = 'Raw Data';
+     title = {'Raw Data', 'Temp C', 'Temp F'};
+     xlswrite(filename, cellstr(title));
+%end
+time_interval = 1; % seconds
+while(1)
+    raw = get(handles.text12, 'String');
+    tempC = get(handles.text13, 'String');
+    tempF = get(handles.text14, 'String');
+    current_Data = {raw, tempC, tempF};
+    xlswrite(filename, 'test' ,'append')
+    pause(time_interval)
+end
 
 
 
