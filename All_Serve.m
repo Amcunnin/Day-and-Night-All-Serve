@@ -115,25 +115,55 @@ function pushbutton4_Callback(hObject, eventdata, handles)
 % hObject    handle to pushbutton4 (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-filename = 'aio_Log.xls';
-%if exist(filename, 'file')==2
-     % File exists.
- %    delete 'filename';
-%else
-     % File does not exist.
-     %title = 'Raw Data';
-     title = {'Raw Data', 'Temp C', 'Temp F'};
-     xlswrite(filename, cellstr(title));
-%end
-time_interval = 1; % seconds
-while(1)
-    raw = get(handles.text12, 'String');
-    tempC = get(handles.text13, 'String');
-    tempF = get(handles.text14, 'String');
-    current_Data = {raw, tempC, tempF};
-    xlswrite(filename, 'test' ,'append')
-    pause(time_interval)
-end
+clear
+clc
+filename = 'test.txt';
+title = {'Raw Data' 'Temp C' 'Temp F'};
+fid = fopen(filename, 'w');
+fprintf(fid,'%s\t%s\t\t%s\n',title{:});
+fclose(fid);
+
+raw = 'rawData';
+tempC = 'tempC';
+tempF = 'tempF';
+current_Data = {raw, tempC, tempF};
+
+fid = fopen(filename, 'a');
+fprintf(fid, '%s\t\t%s\t\t%s\n', current_Data{:});
+fclose(fid);
+
+% %if exist(filename, 'file')==2
+%      % File exists.
+%  %    delete 'filename';
+% %else
+%      % File does not exist.
+%      %title = 'Raw Data';
+%      title = ['Raw Data', 'Temp C', 'Temp F'];
+%      %xlswrite(filename, cellstr(title));
+%      fid = fopen(filename, 'w');
+%     fprintf(fid, '%s', title);
+%     fclose(fid);
+% %end
+% time_interval = 1; % seconds
+% %while(1)
+%     %debug
+%     raw = 'rawData';
+%     tempC = 'tempC';
+%     tempF = 'tempF';
+%     %end debug
+%     
+%     %raw = get(handles.text12, 'String');
+%     %tempC = get(handles.text13, 'String');
+%     %tempF = get(handles.text14, 'String');
+%     
+%     current_Data = [raw; tempC; tempF];
+%     fid = fopen(filename, 'a');
+%     fprintf(fid, '\n%s', current_Data);
+%     %xlswrite(filename, cellstr(current_Data),'Sheet1');
+%     pause(time_interval)
+%     fclose(fid);
+%     sprintf('done')
+% %end
 
 
 
