@@ -70,6 +70,7 @@ function pushbutton2_Callback(hObject, eventdata, handles)
 % handles    structure with handles and user data (see GUIDATA)
 set(handles.text20, 'String', 'Reading Data');
 while(1)
+    try
     [ai0, ai1] = ReadData();
     %Device ID
     set(handles.text11, 'String', 'ai0');
@@ -86,6 +87,13 @@ while(1)
     %TempF
     set(handles.text14, 'String', num2str(degC2degF(ai0_TempC)));
     set(handles.text18, 'String', num2str(degC2degF(ai1_TempC)));
+    catch kittens
+        clc
+        fprintf('Data Unavailable\n')
+        % TODO: ADD ERROR DISPLAY TO GUI
+        set(handles.text20, 'String', 'DATA ERROR');
+        break;
+    end
 end
 
 
@@ -105,61 +113,37 @@ function pushbutton4_Callback(hObject, eventdata, handles)
 % hObject    handle to pushbutton4 (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
+
+% TODO: ENABLE/DISABLE DEBUG OPTION FOR REMOTE CODING
 while(1)
     if checkStop(get(handles.text20, 'String'))
         fprintf('Logger Stopped\n')
         return
     else
+        % TODO: ADD TIME STAMP TO FILENAME AND LOG
+        % TODO: ADD LOG TIMER
         set(handles.text20, 'String', 'Logging Data');
+        clc
+        fprintf('Logger Started\n')
+        filename = 'test.txt';
+        time_interval = 1; % seconds
+        format = '%-10s\t%-10s\t%-10s\n';
         
+        if ~isfile(filename)
+            title = {'Raw Data' 'Temp C' 'Temp F'};
+            fid = fopen(filename, 'w');
+            fprintf(fid,format,title{:});
+            fclose(fid);
+        end 
+        
+        raw = 'rawData';
+        tempC = 'tempCData';
+        tempF = 'tempFData';
+        current_Data = {raw, tempC, tempF};
+        
+        fid = fopen(filename, 'a');
+        fprintf(fid,format, current_Data{:});
+        fclose(fid);
+        pause(time_interval);    
     end
 end
-
-
-% % filename = 'test.txt';
-% % title = {'Raw Data' 'Temp C' 'Temp F'};
-% % fid = fopen(filename, 'w');
-% % fprintf(fid,'%s\t%s\t\t%s\n',title{:});
-% % fclose(fid);
-% % 
-% % raw = 'rawData';
-% % tempC = 'tempC';
-% % tempF = 'tempF';
-% % current_Data = {raw, tempC, tempF};
-% % 
-% % fid = fopen(filename, 'a');
-% % fprintf(fid, '%s\t\t%s\t\t%s\n', current_Data{:});
-% % fclose(fid);
-
-% %if exist(filename, 'file')==2
-%      % File exists.
-%  %    delete 'filename';
-% %else
-%      % File does not exist.
-%      %title = 'Raw Data';
-%      title = ['Raw Data', 'Temp C', 'Temp F'];
-%      %xlswrite(filename, cellstr(title));
-%      fid = fopen(filename, 'w');
-%     fprintf(fid, '%s', title);
-%     fclose(fid);
-% %end
-% time_interval = 1; % seconds
-% %while(1)
-%     %debug
-%     raw = 'rawData';
-%     tempC = 'tempC';
-%     tempF = 'tempF';
-%     %end debug
-%     
-%     %raw = get(handles.text12, 'String');
-%     %tempC = get(handles.text13, 'String');
-%     %tempF = get(handles.text14, 'String');
-%     
-%     current_Data = [raw; tempC; tempF];
-%     fid = fopen(filename, 'a');
-%     fprintf(fid, '\n%s', current_Data);
-%     %xlswrite(filename, cellstr(current_Data),'Sheet1');
-%     pause(time_interval)
-%     fclose(fid);
-%     sprintf('done')
-% %end
