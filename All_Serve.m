@@ -15,14 +15,6 @@ function varargout = All_Serve(varargin)
 %      unrecognized property name or invalid value makes property application
 %      stop.  All inputs are passed to All_Serve_OpeningFcn via varargin.
 %
-%      *See GUI Options on GUIDE's Tools menu.  Choose "GUI allows only one
-%      instance to run (singleton)".
-%
-% See also: GUIDE, GUIDATA, GUIHANDLES
-
-% Edit the above text to modify the response to help All_Serve
-
-% Last Modified by GUIDE v2.5 05-Nov-2019 00:59:10
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -58,9 +50,6 @@ handles.output = hObject;
 % Update handles structure
 guidata(hObject, handles);
 
-% UIWAIT makes All_Serve wait for user response (see UIRESUME)
-% uiwait(handles.figure1);
-
 
 % --- Outputs from this function are returned to the command line.
 function varargout = All_Serve_OutputFcn(hObject, eventdata, handles) 
@@ -72,15 +61,14 @@ function varargout = All_Serve_OutputFcn(hObject, eventdata, handles)
 % Get default command line output from handles structure
 varargout{1} = handles.output;
 
-
 % --- Executes on button press in 'Start'.
 function pushbutton2_Callback(hObject, eventdata, handles)
 % TODO:TURN INTO TOGGLE BUTTON
 
-
 % hObject    handle to pushbutton2 (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
+set(handles.text20, 'String', 'Reading Data');
 while(1)
     [ai0, ai1] = ReadData();
     %Device ID
@@ -106,7 +94,9 @@ function pushbutton3_Callback(hObject, eventdata, handles)
 % hObject    handle to pushbutton3 (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-close all force
+clc
+fprintf('\nStopping\n')
+set(handles.text20, 'String', 'Stopped');
 return
 
 
@@ -115,22 +105,31 @@ function pushbutton4_Callback(hObject, eventdata, handles)
 % hObject    handle to pushbutton4 (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-clear
-clc
-filename = 'test.txt';
-title = {'Raw Data' 'Temp C' 'Temp F'};
-fid = fopen(filename, 'w');
-fprintf(fid,'%s\t%s\t\t%s\n',title{:});
-fclose(fid);
+while(1)
+    if checkStop(get(handles.text20, 'String'))
+        fprintf('Logger Stopped\n')
+        return
+    else
+        set(handles.text20, 'String', 'Logging Data');
+        
+    end
+end
 
-raw = 'rawData';
-tempC = 'tempC';
-tempF = 'tempF';
-current_Data = {raw, tempC, tempF};
 
-fid = fopen(filename, 'a');
-fprintf(fid, '%s\t\t%s\t\t%s\n', current_Data{:});
-fclose(fid);
+% % filename = 'test.txt';
+% % title = {'Raw Data' 'Temp C' 'Temp F'};
+% % fid = fopen(filename, 'w');
+% % fprintf(fid,'%s\t%s\t\t%s\n',title{:});
+% % fclose(fid);
+% % 
+% % raw = 'rawData';
+% % tempC = 'tempC';
+% % tempF = 'tempF';
+% % current_Data = {raw, tempC, tempF};
+% % 
+% % fid = fopen(filename, 'a');
+% % fprintf(fid, '%s\t\t%s\t\t%s\n', current_Data{:});
+% % fclose(fid);
 
 % %if exist(filename, 'file')==2
 %      % File exists.
@@ -164,6 +163,3 @@ fclose(fid);
 %     fclose(fid);
 %     sprintf('done')
 % %end
-
-
-
