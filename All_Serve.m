@@ -102,8 +102,7 @@ function pushbutton3_Callback(hObject, eventdata, handles)
 % hObject    handle to pushbutton3 (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-clc
-fprintf('\nStopping\n')
+fprintf('Stopping\n')
 set(handles.text20, 'String', 'Stopped');
 return
 
@@ -115,35 +114,82 @@ function pushbutton4_Callback(hObject, eventdata, handles)
 % handles    structure with handles and user data (see GUIDATA)
 
 % TODO: ENABLE/DISABLE DEBUG OPTION FOR REMOTE CODING
-while(1)
-    if checkStop(get(handles.text20, 'String'))
-        fprintf('Logger Stopped\n')
-        return
-    else
-        % TODO: ADD TIME STAMP TO FILENAME AND LOG
-        % TODO: ADD LOG TIMER
-        set(handles.text20, 'String', 'Logging Data');
-        clc
-        fprintf('Logger Started\n')
-        filename = 'test.txt';
-        time_interval = 1; % seconds
-        format = '%-10s\t%-10s\t%-10s\n';
-        
-        if ~isfile(filename)
-            title = {'Raw Data' 'Temp C' 'Temp F'};
-            fid = fopen(filename, 'w');
-            fprintf(fid,format,title{:});
-            fclose(fid);
-        end 
-        
-        raw = 'rawData';
-        tempC = 'tempCData';
-        tempF = 'tempFData';
-        current_Data = {raw, tempC, tempF};
-        
-        fid = fopen(filename, 'a');
-        fprintf(fid,format, current_Data{:});
-        fclose(fid);
-        pause(time_interval);    
-    end
+% TODO: ADD FORMATED TIME STAMP TO FILENAME AND LOG
+% TODO: ADD LOG TIMER
+% TODO: CREATE FUNCTION TO CREATE FILES
+
+% Check to see if logger can start
+if checkStop(get(handles.text20, 'String'))
+    fprintf('Logger Error\n')
+    return
+else
+    set(handles.text20, 'String', 'Logging Data');
+    fprintf('Logger Started\n')
 end
+
+ Timestamp = datestr(now,'mm_dd_yyyy_HHMM'); %datetime('now')
+ % TODO: ASK LOGGING INTERVAL
+ time_interval = 1; % seconds
+ format = '%-10s\t%-10s\t%-10s\n';
+ 
+ 
+ %% Create files
+ 
+ % TODO: CREATE DIRECTORY FOR LOGS
+ % TODO: CREATE SUBDIRECTORY FOR EACH LOGGING INSTANCE
+ num_sensors = 5;
+ for i = 1:num_sensors
+     filename = "ai"+(i-1)+"_"+Timestamp+".txt";
+     if ~isfile(filename)
+         filenames(i) = filename;
+         title = {'Raw Data' 'Temp C' 'Temp F'};
+         fid = fopen(filenames(i), 'w');
+         fprintf(fid,format,title{:});
+         fclose(fid);
+     end
+ end
+ 
+ i = 1;
+ while(~checkStop(get(handles.text20, 'String')))
+     
+     switch i
+         case 1
+             raw = 'rawData1';
+             tempC = 'tempCData1';
+             tempF = 'tempFData1';
+             current_Data = {raw, tempC, tempF};
+         case 2
+             raw = 'rawData2';
+             tempC = 'tempCData2';
+             tempF = 'tempFData2';
+             current_Data = {raw, tempC, tempF};
+         case 3
+             raw = 'rawData3';
+             tempC = 'tempCData3';
+             tempF = 'tempFData3';
+             current_Data = {raw, tempC, tempF};
+         case 4
+             raw = 'rawData4';
+             tempC = 'tempCData4';
+             tempF = 'tempFData4';
+             current_Data = {raw, tempC, tempF};
+         case 5
+             raw = 'rawData5';
+             tempC = 'tempCData5';
+             tempF = 'tempFData5';
+             current_Data = {raw, tempC, tempF};
+     end
+     
+     % Update Log
+     fid = fopen(filenames(i), 'a');
+     fprintf(fid,format, current_Data{:});
+     fclose(fid);
+     
+     if i == num_sensors
+         i = 0;
+     end
+     i = i+1;
+     
+     pause(time_interval)
+ end
+ fprintf('Logger Stopped\n')
