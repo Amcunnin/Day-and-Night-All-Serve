@@ -19,11 +19,11 @@ function varargout = All_Serve(varargin)
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
 gui_State = struct('gui_Name',       mfilename, ...
-                   'gui_Singleton',  gui_Singleton, ...
-                   'gui_OpeningFcn', @All_Serve_OpeningFcn, ...
-                   'gui_OutputFcn',  @All_Serve_OutputFcn, ...
-                   'gui_LayoutFcn',  [] , ...
-                   'gui_Callback',   []);
+    'gui_Singleton',  gui_Singleton, ...
+    'gui_OpeningFcn', @All_Serve_OpeningFcn, ...
+    'gui_OutputFcn',  @All_Serve_OutputFcn, ...
+    'gui_LayoutFcn',  [] , ...
+    'gui_Callback',   []);
 if nargin && ischar(varargin{1})
     gui_State.gui_Callback = str2func(varargin{1});
 end
@@ -34,6 +34,10 @@ else
     gui_mainfcn(gui_State, varargin{:});
 end
 % End initialization code - DO NOT EDIT
+
+
+%TODO: TURN EACH BUTTON INTO A FUNCTION?
+
 
 
 % --- Executes just before All_Serve is made visible.
@@ -52,7 +56,7 @@ guidata(hObject, handles);
 
 
 % --- Outputs from this function are returned to the command line.
-function varargout = All_Serve_OutputFcn(hObject, eventdata, handles) 
+function varargout = All_Serve_OutputFcn(hObject, eventdata, handles)
 % varargout  cell array for returning output args (see VARARGOUT);
 % hObject    handle to figure
 % eventdata  reserved - to be defined in a future version of MATLAB
@@ -71,22 +75,46 @@ function pushbutton2_Callback(hObject, eventdata, handles)
 set(handles.text20, 'String', 'Reading Data');
 while(1)
     try
-    [ai0, ai1] = ReadData();
-    %Device ID
-    set(handles.text11, 'String', 'ai0');
-    set(handles.text15, 'String', 'ai1');
-    %Raw Data
-    format shortg
-    set(handles.text12, 'String', num2str(ai0));
-    set(handles.text16, 'String', num2str(ai1));
-    %TempC
-    ai0_TempC = data2DegC(ai0);
-    ai1_TempC = data2DegC(ai1);
-    set(handles.text13, 'String', num2str(ai0_TempC));
-    set(handles.text17, 'String', num2str(ai1_TempC));
-    %TempF
-    set(handles.text14, 'String', num2str(degC2degF(ai0_TempC)));
-    set(handles.text18, 'String', num2str(degC2degF(ai1_TempC)));
+        %TODO: MAKE MORE STREAMLINE AND AUTOMATED
+        %TODO: CHECK IF DATA EXISTS AND IS VALID
+        [ai0, ai1, ai2, ai3, ai4] = ReadData();
+        
+        format shortg
+        %ai0
+        set(handles.text11, 'String', 'ai0'); % Device ID
+        set(handles.text12, 'String', num2str(ai0)); % Raw Data
+        ai0_TempC = data2DegC(ai0);
+        set(handles.text13, 'String', num2str(ai0_TempC)); % TempC
+        set(handles.text14, 'String', num2str(degC2degF(ai0_TempC))); % TempF
+        
+        %ai1
+        set(handles.text15, 'String', 'ai1'); % Device ID
+        set(handles.text16, 'String', num2str(ai1)); % Raw Data
+        ai1_TempC = data2DegC(ai1);
+        set(handles.text17, 'String', num2str(ai1_TempC));    % TempC
+        set(handles.text18, 'String', num2str(degC2degF(ai1_TempC))); % TempF
+        
+        %ai2
+        set(handles.text21, 'String', 'ai2'); % Device ID
+        set(handles.text22, 'String', num2str(ai2)); % Raw Data
+        ai2_TempC = data2DegC(ai2);
+        set(handles.text23, 'String', num2str(ai2_TempC));    % TempC
+        set(handles.text24, 'String', num2str(degC2degF(ai2_TempC))); % TempF
+        
+        %ai3
+        set(handles.text25, 'String', 'ai3'); % Device ID
+        set(handles.text26, 'String', num2str(ai3)); % Raw Data
+        ai3_TempC = data2DegC(ai3);
+        set(handles.text27, 'String', num2str(ai3_TempC));    % TempC
+        set(handles.text28, 'String', num2str(degC2degF(ai3_TempC))); % TempF
+        
+        %ai4
+        set(handles.text29, 'String', 'ai4'); % Device ID
+        set(handles.text30, 'String', num2str(ai4)); % Raw Data
+        ai4_TempC = data2DegC(ai4);
+        set(handles.text31, 'String', num2str(ai4_TempC));    % TempC
+        set(handles.text32, 'String', num2str(degC2degF(ai4_TempC))); % TempF
+        
     catch kittens
         clc
         fprintf('Data Unavailable\n')
@@ -127,69 +155,77 @@ else
     fprintf('Logger Started\n')
 end
 
- Timestamp = datestr(now,'mm_dd_yyyy_HHMM'); %datetime('now')
- % TODO: ASK LOGGING INTERVAL
- time_interval = 1; % seconds
- format = '%-10s\t%-10s\t%-10s\n';
- 
- 
- %% Create files
- 
- % TODO: CREATE DIRECTORY FOR LOGS
- % TODO: CREATE SUBDIRECTORY FOR EACH LOGGING INSTANCE
- num_sensors = 5;
- for i = 1:num_sensors
-     filename = "ai"+(i-1)+"_"+Timestamp+".txt";
-     if ~isfile(filename)
-         filenames(i) = filename;
-         title = {'Raw Data' 'Temp C' 'Temp F'};
-         fid = fopen(filenames(i), 'w');
-         fprintf(fid,format,title{:});
-         fclose(fid);
-     end
- end
- 
- i = 1;
- while(~checkStop(get(handles.text20, 'String')))
-     
-     switch i
-         case 1
-             raw = 'rawData1';
-             tempC = 'tempCData1';
-             tempF = 'tempFData1';
-             current_Data = {raw, tempC, tempF};
-         case 2
-             raw = 'rawData2';
-             tempC = 'tempCData2';
-             tempF = 'tempFData2';
-             current_Data = {raw, tempC, tempF};
-         case 3
-             raw = 'rawData3';
-             tempC = 'tempCData3';
-             tempF = 'tempFData3';
-             current_Data = {raw, tempC, tempF};
-         case 4
-             raw = 'rawData4';
-             tempC = 'tempCData4';
-             tempF = 'tempFData4';
-             current_Data = {raw, tempC, tempF};
-         case 5
-             raw = 'rawData5';
-             tempC = 'tempCData5';
-             tempF = 'tempFData5';
-             current_Data = {raw, tempC, tempF};
-     end
-     
-     % Update Log
-     fid = fopen(filenames(i), 'a');
-     fprintf(fid,format, current_Data{:});
-     fclose(fid);
-     
-     if i == num_sensors
-         i = 0;
-     end
-     i = i+1;
-     
-     pause(time_interval)
- end
- fprintf('Logger Stopped\n')
+Timestamp = datestr(now,'mm_dd_yyyy_HHMM'); %datetime('now')
+% TODO: ASK LOGGING INTERVAL
+time_interval = 1; % seconds
+format = '%-10s\t%-10s\t%-10s\n';
+
+
+% Make "Logs" Directory if it does not already exist
+master_logs = 'Logs';
+if ~exist(master_logs, 'dir')
+    mkdir(master_logs)
+end
+
+% Create subdirectory for logging instance
+sub_dir = fullfile(master_logs, Timestamp);
+mkdir(sub_dir)
+
+% Create files
+num_sensors = 5;
+for i = 1:num_sensors
+    f = "ai"+(i-1)+"_"+Timestamp+".txt";
+    if ~isfile(f)
+        filename = fullfile(sub_dir, f);
+        filenames(i) = filename;
+        title = {'Raw Data' 'Temp C' 'Temp F'};
+        fid = fopen(filenames(i), 'w');
+        fprintf(fid,format,title{:});
+        fclose(fid);
+    end
+end
+
+i = 1;
+while(~checkStop(get(handles.text20, 'String')))
+    
+    switch i
+        case 1
+            raw = get(handles.text12, 'String');
+            tempC = get(handles.text13, 'String');
+            tempF = get(handles.text14, 'String');
+            current_Data = {raw, tempC, tempF};
+        case 2
+            raw = get(handles.text16, 'String');
+            tempC = get(handles.text17, 'String');
+            tempF = get(handles.text18, 'String');
+            current_Data = {raw, tempC, tempF};
+        case 3
+            raw = get(handles.text22, 'String');
+            tempC = get(handles.text23, 'String');
+            tempF = get(handles.text24, 'String');
+            current_Data = {raw, tempC, tempF};
+        case 4
+            raw = get(handles.text26, 'String');
+            tempC = get(handles.text27, 'String');
+            tempF = get(handles.text28, 'String');
+            current_Data = {raw, tempC, tempF};
+        case 5
+            raw = get(handles.text30, 'String');
+            tempC = get(handles.text31, 'String');
+            tempF = get(handles.text32, 'String');
+            current_Data = {raw, tempC, tempF};
+    end
+    
+    % Update Log
+    fid = fopen(filenames(i), 'a');
+    fprintf(fid,format, current_Data{:});
+    fclose(fid);
+    
+    if i == num_sensors
+        i = 0;
+    end
+    i = i+1;
+    
+    pause(time_interval)
+end
+fprintf('Logger Stopped\n')
