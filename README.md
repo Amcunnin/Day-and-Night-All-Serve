@@ -6,6 +6,4 @@ The purpose of this project is for automated detection of potential failures in 
 The detection will be implemented via an AI system that will alert Day and Nite of a potential failure and provide continuous real time data of systems.
 
 Authors in Alphabetical Order:
-Coco, Dante
-Cunningham, Adam
-Fields, Garrett
+Dante Coco, Adam Cunningham, Garrett Fields
