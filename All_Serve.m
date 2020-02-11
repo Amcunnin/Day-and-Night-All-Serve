@@ -174,7 +174,7 @@ mkdir(sub_dir)
 % Create files
 num_sensors = 5;
 for i = 1:num_sensors
-    f = "ai"+(i-1)+"_"+Timestamp+".txt";
+    f = 'ai'+(i-1)+'_'+Timestamp+'.txt';
     if ~isfile(f)
         filename = fullfile(sub_dir, f);
         filenames(i) = filename;
