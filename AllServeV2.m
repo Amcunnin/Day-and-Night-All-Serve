@@ -217,7 +217,6 @@ logger_delay = 4;
         if (strcmp(get(handles.text67, 'String'),'Not Started'))
             Timestamp = datestr(now,'mm_dd_yyyy_HHMM');
             set(handles.text69, 'String', Timestamp);
-            format = '%-10s\t%-10s\t%-10s\n';
             fprintf('\nTimestamp Set\n')
             fprintf('logger started\n\n')
             set(handles.btn_LogData,'Enable','off')
@@ -240,16 +239,60 @@ logger_delay = 4;
         end
 
         % make .csv file
-        file = fullfile(sub_dir, strcat(Timestamp,'.csv'));
-        if ~isfile(file)
-            filename = fullfile(sub_dir, strcat(Timestamp,'.csv'));
-            %test
+             
+        filename = fullfile(sub_dir, strcat(Timestamp,'.csv'));
+        if ~isfile(filename)
+            title = {'temp1Raw','temp1C','temp1F',...
+                'temp2Raw','temp2C','temp2F',...
+                'temp3Raw','temp3C','temp3F',...
+                'temp4Raw','temp4C','temp4F',...
+                'temp5Raw','temp5C','temp5F',...
+                'amp1Raw','amp1Amps',...
+                'amp2Raw','amp2Amps',...
+                'amp3Raw','amp3Amps'};
             fid = fopen(filename,'w');
-            fprintf(fid,'%f,%f,%f,%f,%f,%f\r\n',[1, 2, 3, 4, 5, 6].');
+%             fprintf(fid,title{:});
+            cell2csv(filename,title,',')
             fid = fclose(fid);
-            fprintf('made a file\n')
+            fprintf('I made a file\n')
+            pause(1)
         else
-            fprintf('appended a the file\n')
+            temp1Raw = str2num(get(handles.text32, 'String'));
+            temp1C = str2num(get(handles.text33, 'String'));
+            temp1F = str2num(get(handles.text34, 'String'));
+            temp2Raw = str2num(get(handles.text36, 'String'));
+            temp2C = str2num(get(handles.text37, 'String'));
+            temp2F = str2num(get(handles.text38, 'String'));
+            temp3Raw = str2num(get(handles.text40, 'String'));
+            temp3C = str2num(get(handles.text41, 'String'));
+            temp3F = str2num(get(handles.text42, 'String'));            
+            temp4Raw = str2num(get(handles.text44, 'String'));
+            temp4C = str2num(get(handles.text45, 'String'));
+            temp4F =  str2num(get(handles.text46, 'String'));            
+            temp5Raw = str2num(get(handles.text48, 'String'));
+            temp5C = str2num(get(handles.text49, 'String'));
+            temp5F = str2num(get(handles.text50, 'String'));            
+            amp1Raw = str2num(get(handles.text55, 'String'));
+            amp1Amps = str2num(get(handles.text62, 'String'));
+            amp2Raw = str2num(get(handles.text57, 'String'));
+            amp2Amps = str2num(get(handles.text63, 'String'));
+            amp3Raw = str2num(get(handles.text59, 'String'));
+            amp3Amps = str2double(get(handles.text64, 'String'));
+            
+            fid = fopen(filename,'a+');
+            data_log = {temp1Raw,temp1C,temp1F,...
+                temp2Raw,temp2C,temp2F,...
+                temp3Raw,temp3C,temp3F,...
+                temp4Raw,temp4C,temp4F,...
+                temp5Raw,temp5C,temp5F,...
+                amp1Raw',amp1Amps,...
+                amp2Raw',amp2Amps,...
+                amp3Raw',amp3Amps};
+            
+            dlmwrite(filename,data_log,'-append');
+            fid = fclose(fid);
+            fprintf('I appended a the file\n')
+            pause(1)
         end
         
         
