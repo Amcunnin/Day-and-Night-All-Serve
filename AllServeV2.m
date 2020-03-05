@@ -100,15 +100,15 @@ while(1)
     if ~checkStop(get(handles.text66, 'String'))
         try
             set(handles.text66, 'String', 'Reading Data');
-%             [temp1, temp2, temp3, temp4, temp5, amp1, amp2, amp3] = ReadData();
-            temp1 = 0.0796;
-            temp2 = 1.5246;
-            temp3 = 1.299;
-            temp4 = 1.2687;
-            temp5 = 1.3298;
-            amp1 = 1.4024;
-            amp2 = 0.6106;
-            amp3 = 0.12532;
+            [temp1, temp2, temp3, temp4, temp5, amp1, amp2, amp3] = ReadData();
+%             temp1 = 0.0796;
+%             temp2 = 1.5246;
+%             temp3 = 1.299;
+%             temp4 = 1.2687;
+%             temp5 = 1.3298;
+%             amp1 = 1.4024;
+%             amp2 = 0.6106;
+%             amp3 = 0.12532;
             pause(time_Delay);
         catch kittens
             fprintf('Data Unavailable\n')
@@ -206,12 +206,13 @@ return
 %TODO: CHECK IF LOGGER IS BEING CLICKED WHILE STOPPED
 %TODO: CREATE .CSV FILE WITH TIMESTAMP
 %TODO: POPULATE .CSV WITH SENSOR DATA
+%TODO: CREATE NEW LOG EACH DAY
 
 function btn_LogData_Callback(hObject, eventdata, handles)
 % hObject    handle to btn_LogData (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-logger_delay = 4;
+logger_delay = 300;
     if (~checkStop(get(handles.text66, 'String')))
         
         if (strcmp(get(handles.text67, 'String'),'Not Started'))
@@ -241,8 +242,11 @@ logger_delay = 4;
         % make .csv file
              
         filename = fullfile(sub_dir, strcat(Timestamp,'.csv'));
-        if ~isfile(filename)
-            title = {'temp1Raw','temp1C','temp1F',...
+        if ~exist(filename, 'file')
+            %         if ~isfile(filename)    <---- this will only work with 2014+
+            %         editions
+            title = {'Time',...
+                'temp1Raw','temp1C','temp1F',...
                 'temp2Raw','temp2C','temp2F',...
                 'temp3Raw','temp3C','temp3F',...
                 'temp4Raw','temp4C','temp4F',...
@@ -251,12 +255,13 @@ logger_delay = 4;
                 'amp2Raw','amp2Amps',...
                 'amp3Raw','amp3Amps'};
             fid = fopen(filename,'w');
-%             fprintf(fid,title{:});
+            %             fprintf(fid,title{:});
             cell2csv(filename,title,',')
             fid = fclose(fid);
             fprintf('I made a file\n')
-            pause(1)
+            pause(.01)
         else
+            time = str2num(datestr(now,'HHMM'));
             temp1Raw = str2num(get(handles.text32, 'String'));
             temp1C = str2num(get(handles.text33, 'String'));
             temp1F = str2num(get(handles.text34, 'String'));
@@ -276,11 +281,11 @@ logger_delay = 4;
             amp1Amps = str2num(get(handles.text62, 'String'));
             amp2Raw = str2num(get(handles.text57, 'String'));
             amp2Amps = str2num(get(handles.text63, 'String'));
-            amp3Raw = str2num(get(handles.text59, 'String'));
+            amp3Raw = str2double(get(handles.text59, 'String'));
             amp3Amps = str2double(get(handles.text64, 'String'));
             
             fid = fopen(filename,'a+');
-            data_log = {temp1Raw,temp1C,temp1F,...
+            data_log = {time,temp1Raw,temp1C,temp1F,...
                 temp2Raw,temp2C,temp2F,...
                 temp3Raw,temp3C,temp3F,...
                 temp4Raw,temp4C,temp4F,...
@@ -291,21 +296,16 @@ logger_delay = 4;
             
             dlmwrite(filename,data_log,'-append');
             fid = fclose(fid);
-            fprintf('I appended a the file\n')
-            pause(1)
+            fprintf('I appended the file\n')
+            pause(.01)
         end
-        
-        
         fprintf('I just logged data\n')
+        pause(logger_delay)
         btn_Start_Callback(hObject, eventdata, handles);
         
-        
-        
-        
-    
     else
         set(handles.text67, 'String', 'Logger Paused');
         fprintf('logger paused\n')
         return
     end
-    pause(1)
+
