@@ -151,7 +151,7 @@ while(1)
         %Suction Line temperature sensor
         set(handles.text47, 'String', 'SuctionLine'); % Sensor Loc
         set(handles.text48, 'String', num2str(temp5)); % Raw Data
-        temp5_TempC = data2DegC(temp1);
+        temp5_TempC = data2DegC(temp5);
         set(handles.text49, 'String', num2str(temp5_TempC)); % TempC
         set(handles.text50, 'String', num2str(degC2degF(temp5_TempC))); % TempF
         
